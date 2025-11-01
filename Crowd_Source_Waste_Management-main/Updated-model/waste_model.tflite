@@ -1,0 +1,58 @@
+import tensorflow as tf
+import numpy as np
+import os
+
+# --- Model Creation and Training ---
+# NOTE: This is a placeholder for a simple model. 
+# You would replace this with your actual, trained waste classification model.
+
+def create_and_convert_tflite_model(output_filename='waste_model.tflite'):
+    """
+    Creates a simple placeholder TensorFlow model, trains it minimally, 
+    and converts it to a TensorFlow Lite file.
+    """
+    
+    # 1. Define a simple Keras model (Placeholder)
+    model = tf.keras.Sequential([
+        # Input shape: 10 features (e.g., location, report metrics, etc.)
+        tf.keras.layers.Dense(units=16, activation='relu', input_shape=(10,)),
+        tf.keras.layers.Dense(units=3, activation='softmax') # 3 classes (e.g., High, Medium, Low priority)
+    ])
+
+    model.compile(optimizer='adam', loss='mse', metrics=['accuracy'])
+    
+    print("Keras model compiled successfully.")
+    
+    # 2. Minimal Dummy Training Data (Placeholder)
+    X_train = np.random.rand(100, 10).astype(np.float32)
+    Y_train = np.random.randint(0, 3, size=(100,)).astype(np.float32)
+    
+    # Convert labels to one-hot encoding
+    Y_train = tf.keras.utils.to_categorical(Y_train, num_classes=3) 
+
+    # 3. Train the model (minimally)
+    print("Starting minimal dummy training...")
+    model.fit(X_train, Y_train, epochs=5, verbose=0)
+    print("Dummy training complete.")
+
+    # 4. Convert to TensorFlow Lite
+    converter = tf.lite.TFLiteConverter.from_keras_model(model)
+    
+    # Optimization (optional, but good practice for TFLite)
+    converter.optimizations = [tf.lite.Optimize.DEFAULT]
+    
+    tflite_model = converter.convert()
+    
+    # 5. Save the TFLite model to a file
+    with open(output_filename, 'wb') as f:
+        f.write(tflite_model)
+        
+    print(f"\n✅ Successfully created and saved TensorFlow Lite model to: {output_filename}")
+
+
+if _name_ == '_main_':
+    # Ensure TensorFlow is installed before proceeding
+    if 'tensorflow' not in os.environ.get('CONDA_DEFAULT_ENV', '').lower() and not tf._version_:
+        print("Warning: TensorFlow library not detected or installed.")
+    
+    create_and_convert_tflite_model()

@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+scikit-learn
+matplotlib
+plotly
+tensorflow==2.16.1
+joblib
+
+
